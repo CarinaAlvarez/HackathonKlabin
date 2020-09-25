@@ -14,6 +14,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CustomTheme from './Palette.js';
 import felipe from './Felipe.png';
+import CONST from './CONST'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,6 +44,21 @@ export default function RecipeReviewCard() {
     setExpanded(!expanded);
   };
 
+  const getUserData = async () => {
+    try {
+      let response = await fetch(`${CONST.apiBaseURL}employee/?name=felipe`);
+      let responseJson = await response.json();
+      console.log(responseJson);
+      setPontosInd(responseJson[0].points)
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+
+  React.useEffect(() => {
+    getUserData();
+  }, [])
 
   return (
     <Card className={classes.root}>

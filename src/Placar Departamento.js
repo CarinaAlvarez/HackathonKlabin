@@ -54,7 +54,7 @@ export default function PlacarDep() {
         <TableHead>
           <TableRow>
             <TableCell align="center" colSpan={3}>
-              Placar Departamentos
+              <strong>Placar Departamentos</strong>
             </TableCell>
           </TableRow>
           <TableRow>

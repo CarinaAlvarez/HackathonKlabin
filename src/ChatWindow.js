@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Launcher} from 'react-chat-window';
 import Luna from './LunaCabeça.png';
+import CONST from './CONST'
  
 class ChatWindow extends Component {
   constructor() {
@@ -8,14 +9,13 @@ class ChatWindow extends Component {
     this.state = {
       messageList: [],
       userName: 'Felipe',
-      messagesLuna: ["Oi! Como você está?", 
+      messagesLuna: ["Oi! Como está sendo sua semana na Klabin?", 
                     "Como tem se sentido na sua relação com seu time?",
                     "Você está se sente confortável em seu ambiente de trabalho?",
                     "O que acha que poderia melhorar seus dias na Klabin?",
                     "Obrigada por me fazer essa visita! Sempre que quiser pode vir falar comigo :)"
                     ],
       i: 0,
-      newMessages: true,
     };
   }
   
@@ -24,7 +24,33 @@ class ChatWindow extends Component {
     this.setState({i: this.state.i+1})
   }
 
+  postNewFeedback = async (feedback) => {
+    try {
+      let data = {
+        employeeId: 1,
+        officeLocation: "São Paulo",
+        teamName: "RH",
+        feedbackText: feedback
+      }
+
+      let response = await fetch(`${CONST.apiBaseURL}feedback/`, {
+        method: 'POST',
+        mode: 'cors', // no-cors, *cors, same-origin
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+      let responseJson = await response.json();
+      console.log(responseJson);
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+
   _onMessageWasSent(message) {
+    this.postNewFeedback(message.data.text)
     this.setState({
       messageList: [...this.state.messageList, message]
     });
@@ -49,12 +75,10 @@ class ChatWindow extends Component {
       await setTimeout(()=>{return},1000)
       await this._sendMessage(this.state.messagesLuna[this.state.i]);
       this.setState({i: this.state.i+1})
-    } else {
-      this.setState({newMessages: false});
-    }
+    } 
   }
 
-  handleFiles () {
+  handleFiles = () => {
     this._sendMessage("Seu arquivo foi recebido com sucesso1");
   }
  
@@ -65,8 +89,7 @@ class ChatWindow extends Component {
           teamName: 'Luna',
           imageUrl: Luna
         }}
-        onFilesSelected = {this.handleFiles()}
-        newMessagesCount = {newMessages}
+        onFilesSelected = {() => this.handleFiles()}
         showEmoji = {false}
         onMessageWasSent={this.handleSubmitMessage.bind(this)}
         messageList={this.state.messageList}

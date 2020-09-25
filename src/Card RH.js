@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -6,18 +6,17 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import StarsIcon from '@material-ui/icons/Stars';
-import GroupIcon from '@material-ui/icons/Group';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CustomTheme from './Palette.js';
+import wordcloud from './wordclouds/wordcloud.png';
 import FeedbackIcon from '@material-ui/icons/Feedback';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import {VictoryPie, VictoryContainer, VictoryChart, VictoryBar, VictoryTheme, VictoryVoronoiContainer, VictoryLabel} from 'victory';
 import { Title } from '@material-ui/icons';
+import RedFlagsNote from './RedFlagsNote';
+import CONST from './CONST'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,12 +47,41 @@ export default function CardRH() {
   const [mesAntAnt, setMesAntAnt] = React.useState('Julho');
   const [porcPosAntAnt, setPorcPosAntAnt] = React.useState(79);
   const [unidade, setUnidade] =React.useState('São Paulo');
+  const [redFlags, setRedFlags] =React.useState([{}]);
   const title = "Status da Klabin Unidade: " + unidade;
   
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  const getRedFlags = async () => {
+    try {
+      let response = await fetch(`${CONST.apiBaseURL}redflags/`);
+      let responseJson = await response.json();
+      setRedFlags(responseJson);
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    getRedFlags();
+    updateWordcloud();
+  }, [])
+
+  const updateWordcloud = async () => {
+    try {
+      let response = await fetch(`${CONST.apiBaseURL}/wordcloud/`);
+      let responseJson = await response.json();
+      console.log(responseJson);
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+
+  
 
   return (
     <Card className={classes.root}>
@@ -76,7 +104,7 @@ export default function CardRH() {
           <FeedbackIcon />
         </IconButton>
         <Typography variant="body2" color="textSecondary" component="p">
-          40 redflags
+          {`${redFlags.length} alertas`}
         </Typography>
         
         <IconButton
@@ -96,19 +124,26 @@ export default function CardRH() {
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
+        {wordcloud && 
+          <img 
+            src={wordcloud} 
+              style={{
+                marginLeft: "25%", 
+                width:"50%",
+                marginBottom:"-10%",
+                marginTop:"-5%"
+              }}
+            />
+           }
         <div style={{display: "flex", justifyContent:"space-around"}}>
           <VictoryPie
             data={[
-            { x: "Cats", y: 35 },
-            { x: "Dogs", y: 40 },
-            { x: "Birds", y: 55 }
+            { x: "Feedbacks Positivos", y: 84 },
+            { x: "Feedbacks Negativos", y: 16 }
             ]}
-            colorScale = {['#009530', '#50c75e', '#006600']}
-            // width='20%'
+            colorScale = {['#229922', '#991111']}
             height={300}
             containerComponent={<VictoryContainer style={{width:'300px', height:'300px'}}/>}
-            // padding='2%'
-            //radius =
           />
           <VictoryChart
             theme={VictoryTheme.material}
@@ -133,6 +168,7 @@ export default function CardRH() {
             />
           </VictoryChart>
         </div>
+        <RedFlagsNote/>
       </Collapse>
     </Card>
   );

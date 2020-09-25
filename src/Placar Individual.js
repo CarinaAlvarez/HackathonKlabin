@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CustomTheme from './Palette.js';
+import CONST from './CONST'
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -47,7 +48,7 @@ export default function Placar() {
     let result;
     let scores;
     try {
-      scores = await fetch('http://www.hackathon-klabin.com:3001/topscores/');
+      scores = await fetch(`${CONST.apiBaseURL}topscores/`);
       result = await scores.json();
       console.log(result);
       const topFive = result.slice(0,5);
@@ -77,7 +78,7 @@ export default function Placar() {
         <TableHead>
           <TableRow>
             <TableCell align="center" colSpan={4}>
-              Placar Individual
+              <strong>Placar Individual</strong>
             </TableCell>
           </TableRow>
           <TableRow>
