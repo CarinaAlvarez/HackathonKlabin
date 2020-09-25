@@ -72,7 +72,7 @@ export default function CardRH() {
 
   const updateWordcloud = async () => {
     try {
-      let response = await fetch(`${CONST.apiBaseURL}/wordcloud/`);
+      let response = await fetch(`${CONST.apiBaseURL}wordcloud/`);
       let responseJson = await response.json();
       console.log(responseJson);
     }
