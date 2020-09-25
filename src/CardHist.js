@@ -55,7 +55,6 @@ export default function Card2() {
     <Card className={classes.root}>
       <CardHeader
         title="Histórico de Pontos"
-        subheader="25 de Setembro de 2020"
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
@@ -94,6 +93,7 @@ export default function Card2() {
                 { x: mesAnt, y: pontosAnt },
                 { x: mesAtual, y: pontos }
                 ]}
+                labels={[pontosAntAnt, pontosAnt, pontos]}
             />
             <VictoryLabel x={0} y={40} 
               text={"Pontos"}
@@ -115,12 +115,13 @@ export default function Card2() {
                 { x: mesAnt, y: pontosAnt },
                 { x: mesAtual, y: pontos }
                 ]}
+              labels={[pontosAntAnt, pontosAnt, pontos]}
             />
             <VictoryLabel x={0} y={40} 
               text={"Pontos"}
             />
             <VictoryLabel x={80} y={30} 
-              text={"Pontos por mês do Departamento"}
+              text={"Pontos por mês do Meu Departamento"}
             />
           </VictoryChart>
         </div>

@@ -17,6 +17,7 @@ import CustomTheme from './Palette.js';
 import FeedbackIcon from '@material-ui/icons/Feedback';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import {VictoryPie, VictoryContainer, VictoryChart, VictoryBar, VictoryTheme, VictoryVoronoiContainer, VictoryLabel} from 'victory';
+import { Title } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +47,9 @@ export default function CardRH() {
   const [porcPosAnt, setPorcPosAnt] = React.useState(81);
   const [mesAntAnt, setMesAntAnt] = React.useState('Julho');
   const [porcPosAntAnt, setPorcPosAntAnt] = React.useState(79);
-
+  const [unidade, setUnidade] =React.useState('São Paulo');
+  const title = "Status da Klabin Unidade: " + unidade;
+  
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -55,8 +58,7 @@ export default function CardRH() {
   return (
     <Card className={classes.root}>
       <CardHeader
-        title="Status da Klabin"
-        subheader="25 de Setembro de 2020"
+        title = {title}
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
@@ -121,6 +123,7 @@ export default function CardRH() {
                 { x: mesAnt, y: porcPosAnt },
                 { x: mesAtual, y: porcPos }
                 ]}
+              labels={[porcPosAntAnt+'%', porcPosAnt+'%', porcPos+'%']}
             />
             <VictoryLabel x={0} y={40} 
               text={"Em porcentagem [%]"}

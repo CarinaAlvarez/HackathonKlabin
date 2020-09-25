@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,6 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import CustomTheme from './Palette.js';
 
 const StyledTableCell = withStyles((theme) => ({
@@ -40,20 +42,37 @@ const useStyles = makeStyles({
 export default function Placar() {
   const classes = useStyles(CustomTheme);
   const [arrTop, setArrTop] = React.useState();
-  let rows;
   
-  const getData = () => {
-    const topFive = this.arrTop.slice(0,4);
-    const rows = [];
-    var i = 0;
-    if (i<5) {
-      rows.push(createData(i,topFive[i].name, topFive[i].points, topFive[i].dep));
-      i++;
+  const getData = async () => {
+    let result;
+    let scores;
+    try {
+      scores = await fetch('http://www.hackathon-klabin.com:3001/topscores/');
+      result = await scores.json();
+      console.log(result);
+      const topFive = result.slice(0,5);
+      const rows = [];
+      var i = 0;
+      while (i<5) {
+        rows.push(createData(i+1,topFive[i].employeeName, topFive[i].points, topFive[i].employeeTeam));
+        i++;
+      }
+      console.log(rows);
+      setArrTop(rows)
+    }
+    catch (err) {
+      console.log(err)
     }
   }
 
+  useEffect(() => {
+    console.log('effect')
+    getData()
+  }, [])
+
   return (
     <TableContainer component={Paper} style={{marginLeft:'2%',marginRight:'2%'}}>
+      {(arrTop) ?
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow>
@@ -69,7 +88,7 @@ export default function Placar() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {arrTop.map((row) => (
             <StyledTableRow key={row.posicao}  align="center">
               <StyledTableCell component="th" scope="row">
                 {row.posicao}
@@ -81,6 +100,9 @@ export default function Placar() {
           ))}
         </TableBody>
       </Table>
+         :
+         <LinearProgress></LinearProgress>
+    }
     </TableContainer>
   );
 }

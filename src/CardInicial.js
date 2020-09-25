@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 export default function RecipeReviewCard() {
   const classes = useStyles(CustomTheme);
   const [expanded, setExpanded] = React.useState(false);
-  const [name, setName] = React.useState('nome');
   const [pontosInd, setPontosInd] = React.useState(123);
   const [pontosDep, setPontosDep] = React.useState(1208);
 
@@ -53,7 +52,7 @@ export default function RecipeReviewCard() {
             <img alt="felipe" src={felipe}></img>
           </Avatar>
         }
-        title={name}
+        title='Felipe'
         subheader="25 de Setembro de 2020"
       />
       <CardContent>
