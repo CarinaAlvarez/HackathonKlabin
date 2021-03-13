@@ -1,68 +1,64 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# backend-django
 
-## Available Scripts
+Esse é o repositório que contém o código server-side de nossa aplicação. Ele funciona em conjunto com a interface, que encontra-se em https://github.com/CarinaAlvarez/HackathonKlabin
 
-In the project directory, you can run:
+O backend possui diferentes endpoints, são eles:
+![Exemplo](/images/employee-endpoint.png)
+* employee/
+  * utilizado para cadastrar um novo funcionário ou obter informações a respeito de um funcionário da Klabin
+* topscores/
+  * endpoint responsável por retornar, já ordenados, os funcionários que possuem maior pontuação
+* feedback/
+  * utilizado para ler ou criar um feedback
+  * este endpoint também é responsável por executar as analises (tanto a sentiment analysis, quanto a aspect-based, e também a procura por red-flags) antes de salvar o feedback em nosso database
+* wordcloud/
+  * responsável por gerar uma wordcloud atualizada e salvá-la
+* redflags/
+  * endpoint que irá retornar uma lista com os feedbacks que necessitam de uma atenção especial - de acordo com as configurações de quais palavras levantariam esse alerta
 
-### `npm start`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Você pode tentar acessar nossa solução em http://www.hackathon-klabin.com:3000
+Atualmente ela está hospedada na AWS. Por questões de orçamento, a instância na nuvem pode apresentar instabilidades. Ao final desse documento encontra-se instruções para instalção e execução dele localmente. Caso o link http://www.hackathon-klabin.com:3000 fique muito tempo fora do ar, sintam-se livres para nos contatar, somos do Grupo 5.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+# Aplicação
+![interface](/images/interface-main-page.png)
+Para uma melhor visualização das soluções propostas, criamos uma interface que serve como protótipo de como seria o acesso aos dados referentes à gamificação da Luna. Seria acessível para todos os funcionários, com a exceção da seção 'Status da Klabin' que seria reservada para o RH com o resultado dos feedbacks recebidos. Nesta interface, seriam apresentados o total de pontos do funcionário e o total de pontos de seu departamento. Também haveria uma seção 'Placar de Pontos', onde seria possível observar sua posição no placar individual e a posição de seu departamento no placar de departamentos, assim como qual seria os prêmios da rodada, incentivando uma competição amigável para interagirem mais com a Luna. Na seção 'Histórico de Pontos', o funcionário poderia observar sua evolução na obtenção de pontos ao longo de 3 meses, assim como a evolução de seu departamento, de forma a criar o entusiasmo de querer se superar sempre. 
 
-### `npm test`
+![todas as opções da interface](/images/interface-all-cards.png)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+A interface apresentada, neste caso, seria a de um funcionário do RH, já que apresenta, também, a seção "Status da Klabin", a qual ilustra a situação geral do conjunto de feedbacks por meio de uma WordCloud, um gráfico da relação entre os feedbacks positivos e negativos, um gráfico da evolução percentual de feedbacks positivos ao longo de 3 meses e uma subseção de "Redflags". A WordCloud representa as palavras usadas com maior frequência nos feedbacks. A subseção de "Redflags" apresenta os feedbacks que apresentaram termos impróprios, que estão divididos em termos machistas, racistas, lgbtq+fóbicos e outros. Este informe sobre termos impróprios permite ao RH identificar e, portanto, melhorar problemas no ambiente de trabalho, de forma a se obter um ambiente de trabalho harmônico e agradável para todos.
 
-### `npm run build`
+![conversar com a luna](/images/interface-chat-with-luna.png)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Outra ferramenta presenta nesta interface seria o chat com a Luna. Como não tínhamos acesso ao código utilizado para as interação com a Luna, criamos um chat que possibilita uma interação simples, mas com perguntas da Luna que visam obter respostas equivalentes a feedbacks e, consequentemente, material para uma subsequente análise de sentimentos. Logo após a interação com a Luna, o funcionário poderá verificar, ao recarregar a página, que seus pontos aumentaram. Uma outra proposta extra seria a de permitir que a Luna possa receber arquivos pelo chat, de forma a facilitar, por exemplo, o envio de atestados médicos pelos funcionários.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+![enviar arquivo](/images/interface-sending-file.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+# Instalação
+É possível rodar tudo localmente, mas pode ser necessário atualizar o valor da variável "apiBaseURL" no código da interface. A maneira mais fácil de testar a solução continua sendo utilizar a interface remota em http://www.hackathon-klabin.com:3000 
+## Instruções
+- Clone esse repositório
+- Será utilizado python3 e pip para instalar as dependencias
+- Instale as bibliotecas necessárias utilizando `pip install -r requirements.txt`
+- Descompacte o arquivo "sentimentAnalysis.rar" (você pode usar `unrar x sentimentAnalysis.rar` caso esteja em uma máquina linux)
+- rode python3:
+```cmd
+$ python3
+> import nltk
+> nltk.download('punkt')
+> nltk.download('stopwords')
+```
+- Para rodar a "aspect-based sentiment analysis" precisará instalar: `python3 -m spacy download en_core_web_sm`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Rode o servidor django com `python3 manage.py runserver 0:3001`
+ou utilizando `nohup python3 manage.py runserver 0.0.0.0:3001 > app.log &`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Interface
+- Clone o repositório da interface que está em https://github.com/CarinaAlvarez/HackathonKlabin
+- Execute `npm install`
+- Execute `npm start`
+- A interface deve abrir automaticamente, caso isso não aconteça, acesse localhost:3000
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+#### Atenção, ambas as pastas (backend e interface) devem estar localizadas na mesma pasta raiz. 
+-Também pode ser necessário executar `npm run-scripts build` na pasta da interface
